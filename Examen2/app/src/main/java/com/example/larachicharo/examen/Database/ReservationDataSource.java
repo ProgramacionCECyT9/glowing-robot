@@ -74,6 +74,8 @@ public class ReservationDataSource {
         Reservation Reservation = new Reservation();
         Reservation.setId(cursor.getLong(0));
         Reservation.setName(cursor.getString(1));
+        Reservation.setNumber(cursor.getString(2));
+        Reservation.setLocation(cursor.getString(3));
         return Reservation;
     }
 

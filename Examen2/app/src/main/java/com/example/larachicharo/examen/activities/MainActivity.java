@@ -72,7 +72,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.btn_reservar:
                 ReservationDataSource reservationDataSource = new ReservationDataSource(this);
                 reservationDataSource.open();
-                reservationDataSource.createReservation(getReservationData());
+                Reservation reservation = getReservationData();
+                Log.d("About to upload", String.valueOf(reservation.getNumber()));
+                reservation= reservationDataSource.createReservation(reservation);
+                Log.d("Just uploaded", String.valueOf(reservation.getNumber()));
                 reservationDataSource.close();
                 break;
         }
@@ -82,7 +85,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Reservation newReservation = new Reservation();
         newReservation.setName(edit_nombre.getText().toString());
         String stringNumber = edit_numero.getText().toString();
-        newReservation.setNumber(Integer.parseInt(stringNumber));
+        Log.d("about about to upload", stringNumber);
+        newReservation.setNumber(stringNumber);
         GPSTracker gpsTracker = new GPSTracker(this);
         if (gpsTracker.canGetLocation()) {
             latitude = gpsTracker.getLatitude();

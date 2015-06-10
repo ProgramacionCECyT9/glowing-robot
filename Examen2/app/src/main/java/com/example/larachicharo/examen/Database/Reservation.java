@@ -4,7 +4,7 @@ public class Reservation {
 
     private long id;
     private String name;
-    private int number;
+    private String number;
     private String location;
 
     public long getId() {
@@ -15,7 +15,7 @@ public class Reservation {
         return name;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
@@ -31,7 +31,7 @@ public class Reservation {
         this.name = name;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
