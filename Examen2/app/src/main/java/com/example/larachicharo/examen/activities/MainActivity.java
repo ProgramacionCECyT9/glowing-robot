@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.larachicharo.examen.Database.Reservation;
+import com.example.larachicharo.examen.Database.ReservationDataSource;
 import com.example.larachicharo.examen.R;
 import com.example.larachicharo.examen.myGps.GPSTracker;
 
@@ -21,6 +24,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     Button btn_detenerServicio;
     Button btn_hacerReservacion;
     Button btn_verReservaciones;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +52,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_obtenerUbicacion:
-                GPSTracker gpsTracker = new GPSTracker(getApplication());
+                GPSTracker gpsTracker = new GPSTracker(this);
                 if (gpsTracker.canGetLocation()) {
-                    double latitude = gpsTracker.getLatitude();
-                    double longitude = gpsTracker.getLongitude();
+                    latitude = gpsTracker.getLatitude();
+                    longitude = gpsTracker.getLongitude();
                     Toast.makeText(
                             this,
                             "lat: " + String.valueOf(latitude) + " lon: " + String.valueOf(longitude),
@@ -65,7 +70,36 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             case R.id.btn_reservar:
+                ReservationDataSource reservationDataSource = new ReservationDataSource(this);
+                reservationDataSource.open();
+                reservationDataSource.createReservation(getReservationData());
+                reservationDataSource.close();
                 break;
         }
+    }
+
+    public Reservation getReservationData(){
+        Reservation newReservation = new Reservation();
+        newReservation.setName(edit_nombre.getText().toString());
+        String stringNumber = edit_numero.getText().toString();
+        newReservation.setNumber(Integer.parseInt(stringNumber));
+        GPSTracker gpsTracker = new GPSTracker(this);
+        if (gpsTracker.canGetLocation()) {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+            Toast.makeText(
+                    this,
+                    "lat: " + String.valueOf(latitude) + " lon: " + String.valueOf(longitude),
+                    Toast.LENGTH_LONG).show();
+        } else {
+            gpsTracker.showSettingsAlert();
+        }
+        gpsTracker.stopUsingGPS();
+        newReservation.setLocation(gatherLocationToString(latitude, longitude));
+        return newReservation;
+    }
+
+    public String gatherLocationToString(double latitude, double longitude){
+        return "lat: " + String.valueOf(latitude) + " lon: " + String.valueOf(longitude);
     }
 }

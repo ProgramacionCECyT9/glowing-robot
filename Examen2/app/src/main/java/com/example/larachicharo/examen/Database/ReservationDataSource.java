@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,11 @@ public class ReservationDataSource {
         dbHelper.close();
     }
 
-    public Reservation createReservation(String reservation) {
+    public Reservation createReservation(Reservation reservation) {
         ContentValues values = new ContentValues();
-        values.put(mySQLHelper.COLUMN_NAME, reservation);
+        values.put(mySQLHelper.COLUMN_NAME, reservation.getName());
+        values.put(mySQLHelper.COLUMN_NUMBER, reservation.getNumber());
+        values.put(mySQLHelper.COLUMN_LOCATION, reservation.getLocation());
         long insertId = database.insert(mySQLHelper.TABLE_RERSERVATIONS, null,
                 values);
         Cursor cursor = database.query(mySQLHelper.TABLE_RERSERVATIONS,
@@ -42,7 +45,7 @@ public class ReservationDataSource {
         return newReservation;
     }
 
-    public List<Reservation> getAllComments() {
+    public List<Reservation> getAllReservations() {
         List<Reservation> reservations = new ArrayList<Reservation>();
 
         Cursor cursor = database.query(mySQLHelper.TABLE_RERSERVATIONS,
